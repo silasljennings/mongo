@@ -1,0 +1,117 @@
+LUKE JENNINGS
+QUERY ASSIGNMENT WITH MONGODB
+
+
+1. Create a view showing the values of the product on hand (total = qty*price) 
+
+QUERY USED:
+>db.product.aggregate(
+...[
+.....{ name: 1, category: 1, total: { $multiply: [ "$price", "$qty" ] } } 
+...]
+>)
+
+RESULT:
+{ "name" : "Batman Lego Set", "category" : "Toys", "total" : 9.99 }
+{ "name" : "32 Piece Ratchet Set", "category" : "Tools", "total" : 59.98 }
+{ "name" : "Hammer", "category" : "Tools", "total" : 29.950000000000003 }
+{ "name" : "Toothpaste", "category" : "Health", "total" : 2.99 }
+{ "name" : "Floss", "category" : "Health", "total" : 0 }
+{ "name" : "Power Drill", "category" : "Tools", "total" : 249.95000000000002 }
+{ "name" : "120 Piece Lego Set", "total" : 12.99 }
+{ "name" : "Hot-wheels Car", "total" : 9.9 }
+
+
+
+2. Select all the products and the category that the product is in.
+
+QUERY USED: 
+> db.product.find( {},  {category: 1} )
+
+RESULT:
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4d"), "category" : "Toys" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4e"), "category" : "Tools" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4f"), "category" : "Tools" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb50"), "category" : "Health" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb51"), "category" : "Health" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb52"), "category" : "Tools" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb53") }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb54") }
+
+
+
+3. Select the product name and the category name of all the products.
+
+QUERY USED:
+> db.product.find( {},  {name: 1, _id: 0, category: 1} )
+
+RESULT:
+{ "name" : "Batman Lego Set", "category" : "Toys" }
+{ "name" : "32 Piece Ratchet Set", "category" : "Tools" }
+{ "name" : "Hammer", "category" : "Tools" }
+{ "name" : "Toothpaste", "category" : "Health" }
+{ "name" : "Floss", "category" : "Health" }
+{ "name" : "Power Drill", "category" : "Tools" }
+{ "name" : "120 Piece Lego Set" }
+{ "name" : "Hot-wheels Car" }
+
+
+
+4.Select all the products, the categories they belong to, and the company the product is made by
+
+QUERY USED:
+> db.product.find( {},  {name: 1, _id: 0, company: 1,  category: 1} )
+
+RESULT:
+{ "name" : "Batman Lego Set", "company" : "LEGO", "category" : "Toys" }
+{ "name" : "32 Piece Ratchet Set", "company" : "Stanley", "category" : "Tools" }
+{ "name" : "Hammer", "company" : "Stanley", "category" : "Tools" }
+{ "name" : "Toothpaste", "company" : "Crest", "category" : "Health" }
+{ "name" : "Floss", "company" : "Crest", "category" : "Health" }
+{ "name" : "Power Drill", "category" : "Tools" }
+{ "name" : "120 Piece Lego Set", "company" : "LEGO" }
+{ "name" : "Hot-wheels Car" }
+
+
+
+5. Update the company “Stanley” to “Stanley Black and Decker” and re-run
+
+QUERY USED:
+> db.product.update({company: "Stanley"}, {$set: { company: "Stanley Black And Decker"}});
+
+*HAD TO RUN THE ABOVE QUERY TWICE BECASUE THERE WAS TWO "STANLEY" COMPANY ITEMS AND IT ONLY UPDATED THE FIRST ONE IT CAME TO*
+
+RESULT:
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4e"), "name" : "32 Piece Ratchet Set", "qty" : 2, "price" : 29.99, "company" : "Stanley Black And Decker", "category" : "Tools" }
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4f"), "name" : "Hammer", "qty" : 5, "price" : 5.99, "company" : "Stanley Black And Decker", "category" : "Tools" }
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+
+
+6. Select all the products in the tools category with a price greater than 10.00
+
+QUERY USED:
+> db.product.find({price: {$gt: 10}})
+
+RESULT:
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4e"), "name" : "32 Piece Ratchet Set", "qty" : 2, "price" : 29.99, "company" : "Stanley Black And Decker", "category" : "Tools" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb52"), "name" : "Power Drill", "qty" : 5, "price" : 49.99, "category" : "Tools" }
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb53"), "name" : "120 Piece Lego Set", "qty" : 1, "price" : 12.99, "company" : "LEGO" }
+
+QUERY USED:
+> db.product.find({ company: "Stanley Black And Decker", price: {$gt: 10}})
+
+RESULT:
+{ "_id" : ObjectId("5bc4d56e7a1db020e034eb4e"), "name" : "32 Piece Ratchet Set", "qty" : 2, "price" : 29.99, "company" : "Stanley Black And Decker", "category" : "Tools" }
+
+
+
+7. Delete the crest company
+
+QUERY USED:
+> db.product.remove({company: "Crest"})
+
+RESULT:
+db.product.remove({company: "Crest"})
+WriteResult({ "nRemoved" : 2 })

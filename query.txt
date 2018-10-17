@@ -1,0 +1,20 @@
+db.product.aggregate(
+   [
+     { name: 1, category: 1, total: { $multiply: [ "$price", "$qty" ] } } 
+   ]
+)
+
+db.product.update(
+    {company: "Stanley"},
+    {$set:{company: "Stanley Black and Decker"}
+    } } );    
+    
+    
+to start the connection:
+>./mongod
+
+created the db
+$ mongo company < jungle.js
+
+called the mongo shell with the db (gave access)
+mongo company
